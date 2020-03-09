@@ -4,8 +4,8 @@
     "slug": "Bus-Tracker",
     "privacy": "public",
     "sdkVersion": "36.0.0",
-    "platforms": ["ios", "web"],
-    "version": "1.0.1",
+    "platforms": ["ios", "android", "web"],
+    "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {
@@ -19,8 +19,6 @@
     "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": false
-    },
-    "description": "A React Native app with authentication including Register, Login, Username, Forgot Password and Update Profile using React Hooks and React Context API.",
-    "githubUrl": "https://github.com/MosesEsan/mesan-react-native-authentication-app"
+    }
   }
 }
