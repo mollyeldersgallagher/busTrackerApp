@@ -12,7 +12,7 @@ export let headerStyle = {
 export let headerTitleStyle = {
   fontWeight: "bold",
   fontSize: 17,
-  fontFamily: font,
+  // fontFamily: font,
   color: titleColor
 };
 

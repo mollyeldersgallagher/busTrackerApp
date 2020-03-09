@@ -8,7 +8,7 @@ const path = require("path");
 
 // Setting up port
 const uri = process.env.ATLAS_URI;
-let PORT = process.env.PORT || 4000;
+let PORT = process.env.PORT || 8000;
 
 const app = express();
 

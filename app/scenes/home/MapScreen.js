@@ -1,7 +1,7 @@
 import React from "react";
 import { Text, View, StyleSheet } from "react-native";
-import MapView from "react-native-maps";
-import Marker from "react-native-maps";
+// import MapView from "react-native-maps";
+// import Marker from "react-native-maps";
 import Constants from "expo-constants";
 // import Constants from "expo-constants";
 import * as Location from "expo-location";
