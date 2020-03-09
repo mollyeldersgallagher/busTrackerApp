@@ -10,8 +10,6 @@ const path = require("path");
 const connUri = process.env.ATLAS_URI;
 let PORT = process.env.PORT || 4000;
 
-//=== 1 - CREATE APP
-// Creating express app and configuring middleware needed for authentication
 const app = express();
 
 app.use(cors());
@@ -19,16 +17,6 @@ app.use(cors());
 // for parsing application/json
 app.use(express.json());
 
-// for parsing application/xwww-
-//app.use(express.urlencoded({ extended: false }));
-//form-urlencoded
-
-// view engine setup
-// app.set("views", path.join(__dirname, "views"));
-// app.set("view engine", "jade");
-
-//=== 2 - SET UP DATABASE
-//Configure mongoose's promise to global promise
 mongoose.promise = global.Promise;
 mongoose.connect(connUri, { useNewUrlParser: true, useCreateIndex: true });
 
@@ -43,11 +31,15 @@ connection.on("error", err => {
   process.exit();
 });
 
+app.get("/", (req, res) => {
+  res.status(200).send({
+    message: "Welcome to the busTrackerBackend."
+  });
+});
 //=== 3 - INITIALIZE PASSPORT MIDDLEWARE
 app.use(passport.initialize());
 require("./middlewares/jwt")(passport);
 
-//=== 4 - CONFIGURE ROUTES
 //Configure Route
 require("./routes/index")(app);
 
