@@ -1,18 +1,22 @@
 {
-  "name": "nodejsapi",
+  "name": "bus-tracker-backend",
   "version": "1.0.0",
-  "description": "",
-  "main": "server.js",
+  "description": "bus tracker application",
+  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon ./server.js",
-    "watch": "nodemon ./server.js"
+    "start": "nodemon server.js",
+    "watch": "nodemon ./server.js",
+    "web": "nodemon server.js"
   },
   "engines": {
     "node": "10.13.0"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "example",
+    "heroku"
+  ],
+  "author": "Molly Elders Gallagher",
   "license": "ISC",
   "dependencies": {
     "@sendgrid/mail": "^6.4.0",
@@ -36,6 +40,6 @@
     "react-native-multi-selectbox": "^1.2.8"
   },
   "devDependencies": {
-    "nodemon": "^1.19.3"
+    "nodemon": "^2.0.2"
   }
 }

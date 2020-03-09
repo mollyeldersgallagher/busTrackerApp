@@ -7,27 +7,23 @@ const passport = require("passport");
 const path = require("path");
 
 // Setting up port
-const connUri = process.env.ATLAS_URI;
+const uri = process.env.ATLAS_URI;
 let PORT = process.env.PORT || 4000;
 
 const app = express();
 
 app.use(cors());
-
-// for parsing application/json
 app.use(express.json());
 
 mongoose.promise = global.Promise;
-mongoose.connect(connUri, { useNewUrlParser: true, useCreateIndex: true });
+mongoose.connect(uri, { useNewUrlParser: true, useCreateIndex: true });
 
 const connection = mongoose.connection;
 connection.once("open", () =>
-  console.log("MongoDB --  database connection established successfully!")
+  console.log("MongoDB Atlas database connected successfully!")
 );
 connection.on("error", err => {
-  console.log(
-    "MongoDB connection error. Please make sure MongoDB is running. " + err
-  );
+  console.log("MongoDB connection error" + err);
   process.exit();
 });
 
@@ -36,14 +32,12 @@ app.get("/", (req, res) => {
     message: "Welcome to the busTrackerBackend."
   });
 });
-//=== 3 - INITIALIZE PASSPORT MIDDLEWARE
+// INITIALIZE PASSPORT MIDDLEWARE
 app.use(passport.initialize());
 require("./middlewares/jwt")(passport);
 
 //Configure Route
 require("./routes/index")(app);
 
-//=== 5 - START SERVER
-app.listen(PORT, () =>
-  console.log("Server running on http://localhost:" + PORT + "/")
-);
+//server running
+app.listen(PORT, () => console.log("Server running on port" + PORT));
