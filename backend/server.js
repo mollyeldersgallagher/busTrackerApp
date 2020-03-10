@@ -15,7 +15,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-mongoose.promise = global.Promise;
+//mongoose.promise = global.Promise;
 mongoose.connect(uri, {
   useNewUrlParser: true,
   useCreateIndex: true,
@@ -27,10 +27,10 @@ const connection = mongoose.connection;
 connection.once("open", () =>
   console.log("MongoDB Atlas database connected successfully!")
 );
-connection.on("error", err => {
-  console.log("MongoDB connection error" + err);
-  process.exit();
-});
+// connection.on("error", err => {
+//   console.log("MongoDB connection error" + err);
+//   process.exit();
+// });
 
 app.get("/", (req, res) => {
   res.status(200).send({
