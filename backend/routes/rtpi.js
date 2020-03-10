@@ -6,7 +6,7 @@ const axios = require("axios");
 
 router.get("/", (req, res) => {
   fetch(`https://data.smartdublin.ie/cgi-bin/rtpi/routelistinformation`)
-    .then(res => console.log(res))
+    .then(res => res.json())
     .catch(err => {
       res.status(400).json("Error: " + err);
       console.log(err);

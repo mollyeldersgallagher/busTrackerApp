@@ -5,7 +5,7 @@ const rtpi = require("./rtpi");
 const authenticate = require("../middlewares/authenticate");
 
 module.exports = app => {
-  app.use("/api/auth", auth);
-  app.use("/api/rtpi", rtpi);
-  app.use("/api/user", authenticate, user);
+  app.use("/auth", auth);
+  app.use("/rtpi", rtpi);
+  app.use("/user", authenticate, user);
 };
