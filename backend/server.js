@@ -16,7 +16,7 @@ app.use(cors());
 app.use(express.json());
 
 //mongoose.promise = global.Promise;
-mongoose.connect(String(uri), {
+mongoose.connect(uri, {
   useNewUrlParser: true,
   useCreateIndex: true,
   useUnifiedTopology: true
