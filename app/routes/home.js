@@ -5,7 +5,7 @@ import { createStackNavigator } from "react-navigation-stack";
 import HomeScreen from "../scenes/home/Home";
 import Operator from "../scenes/home/Operator";
 import BusRoute from "../scenes/home/BusRoute";
-import MapScreen from "../scenes/home/MapScreen";
+import MapScreen from "../scenes/home/Map";
 import UpdateProfileScreen from "../scenes/home/UpdateProfile";
 
 import { headerStyle, headerTitleStyle } from "../theme";

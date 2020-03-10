@@ -1,7 +1,7 @@
 import React from "react";
 
 //API URL
-export const API_URL = "https://bus-tracker-app-backend.herokuapp.com/";
+export const API_URL = "https://bus-tracker-app-backend.herokuapp.com";
 
 //API End Points
 export const REGISTER = `${API_URL}/auth/register`;

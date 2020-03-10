@@ -26,6 +26,7 @@ router.route("/routes/:operator").get((req, res) => {
 });
 router.route("/route/:routeid").get((req, res) => {
   const routeid = req.params.routeid;
+  //const operator = req.params.operator;
   const operator = "dublinBus";
 
   fetch(

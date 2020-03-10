@@ -26,7 +26,7 @@ export default class BusRoute extends Component {
       operator: this.props.navigation.getParam("operator", {})
     });
     await fetch(
-      `http://localhost:4000/api/rtpi/routes/${this.state.operator.operatorreference}`
+      `https://bus-tracker-app-backend.herokuapp.com/rtpi/routes/${this.state.operator.operatorreference}`
     )
       .then(response => response.json())
       .then(responseJson => {
@@ -46,7 +46,7 @@ export default class BusRoute extends Component {
       console.log(this.state.loading);
       return <Text>Loading</Text>;
     } else {
-      console.log(this.state.serverData);
+      // console.log(this.state.serverData);
       // this.serverData.map(item => {
       //   this.state.routes.push({ name: item.route });
       // });

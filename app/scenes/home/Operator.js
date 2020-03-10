@@ -19,7 +19,7 @@ export default class Operator extends Component {
     //const { navigate } = this.props.navigation;
   }
   componentDidMount() {
-    fetch("http://localhost:4000/api/rtpi/operators")
+    fetch("https://bus-tracker-app-backend.herokuapp.com/rtpi/operators")
       .then(response => response.json())
       .then(responseJson => {
         //Successful response from the API Call
