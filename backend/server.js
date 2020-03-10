@@ -16,12 +16,12 @@ app.use(cors());
 app.use(express.json());
 
 //mongoose.promise = global.Promise;
-mongoose.connect(uri, {
+mongoose.connect(String(uri), {
   useNewUrlParser: true,
   useCreateIndex: true,
   useUnifiedTopology: true
 });
-console.log(uri);
+//console.log(uri);
 
 const connection = mongoose.connection;
 connection.once("open", () =>
