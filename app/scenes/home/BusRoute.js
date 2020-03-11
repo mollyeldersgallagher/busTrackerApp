@@ -33,6 +33,7 @@ export default class BusRoute extends Component {
         //Successful response from the API Call
         this.setState({
           serverData: responseJson.results,
+
           loading: false
           //adding the new data in Data Source of the SearchableDropdown
         });

@@ -1,11 +1,13 @@
 import React from "react";
-import { Text, View, StyleSheet, Keyboard } from "react-native";
+import { Text, View, StyleSheet, Keyboard, Image } from "react-native";
 import MapView, { Marker, Polyline } from "react-native-maps";
+//import { Tooltip, Text } from "react-native-elements";
 // import PolyLine from " @mapbox/polyline";
 import Constants from "expo-constants";
 import * as Location from "expo-location";
 import * as Permissions from "expo-permissions";
 import axios from "axios";
+import stopIcon from "../../../assets/stopImage.png";
 const decodePolyline = require("decode-google-map-polyline");
 
 const LOCATION_SETTINGS = {
@@ -123,8 +125,12 @@ export default class Map extends React.Component {
 
       await this.state.busRoute.map((stop, index) => {
         this.state.stopCoords.push({
+          // stopid: stop.stopid,
+          // name: stop.shortname,
+          // latlng: {
           latitude: parseFloat(stop.latitude),
           longitude: parseFloat(stop.longitude)
+          // }
         });
 
         // console.log(stop);
@@ -143,6 +149,12 @@ export default class Map extends React.Component {
       console.log(error);
     }
   };
+  markerClick(marker) {
+    console.log(marker);
+    this.props.navigation.push("Realtime", {
+      stop: 4570
+    });
+  }
   //https://maps.googleapis.com/maps/api/place/autocomplete/json?key=AIzaSyALah-gL8yd7d0RitnqoRI9kqWP4fZ1oZo&input=mcdonalds
   render() {
     let markers = [];
@@ -155,11 +167,16 @@ export default class Map extends React.Component {
     // }
     if (this.state.stopCoords.length > 1) {
       markers = this.state.stopCoords.map(marker => {
-        return <Marker coordinate={marker} />;
+        // console.log(marker.latlng);
+        return (
+          <Marker coordinate={marker} onPress={() => this.markerClick(marker)}>
+            <Image source={stopIcon} style={{ width: 12, height: 12 }} />
+          </Marker>
+        );
       });
     }
-    console.log(this.state.stopCoords);
-    console.log(this.state.busRoute);
+    //console.log(this.state.stopCoords);
+    // console.log(this.state.busRoute);
 
     if (this.state.isLoading === false) {
       return (
@@ -179,7 +196,7 @@ export default class Map extends React.Component {
           <Polyline
             coordinates={this.state.stopCoords}
             strokeWidth={5}
-            strokeColor="red"
+            strokeColor="blue"
           />
           {markers}
           <Marker
