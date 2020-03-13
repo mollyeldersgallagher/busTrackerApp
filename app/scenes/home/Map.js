@@ -6,10 +6,12 @@ import MapView, { Marker, Polyline } from "react-native-maps";
 import Constants from "expo-constants";
 import * as Location from "expo-location";
 import * as Permissions from "expo-permissions";
+import MapViewDirections from "react-native-maps-directions";
 import axios from "axios";
 import stopIcon from "../../../assets/stopImage.png";
 const decodePolyline = require("decode-google-map-polyline");
 
+const GOOGLE_MAPS_APIKEY = "AIzaSyC4OUI6IkL88voWO_PgRHeQPswBausbuaM";
 const LOCATION_SETTINGS = {
   accuracy: Location.Accuracy.Balanced,
   timeInterval: 200,
@@ -125,12 +127,12 @@ export default class Map extends React.Component {
 
       await this.state.busRoute.map((stop, index) => {
         this.state.stopCoords.push({
-          // stopid: stop.stopid,
-          // name: stop.shortname,
-          // latlng: {
-          latitude: parseFloat(stop.latitude),
-          longitude: parseFloat(stop.longitude)
-          // }
+          stopid: stop.stopid,
+          name: stop.shortname,
+          latlng: {
+            latitude: parseFloat(stop.latitude),
+            longitude: parseFloat(stop.longitude)
+          }
         });
 
         // console.log(stop);
@@ -152,7 +154,7 @@ export default class Map extends React.Component {
   markerClick(marker) {
     console.log(marker);
     this.props.navigation.push("Realtime", {
-      stop: 4570
+      stop: marker.stopid
     });
   }
   //https://maps.googleapis.com/maps/api/place/autocomplete/json?key=AIzaSyALah-gL8yd7d0RitnqoRI9kqWP4fZ1oZo&input=mcdonalds
@@ -165,11 +167,15 @@ export default class Map extends React.Component {
     //     />
     //   );
     // }
+    console.log("hello");
     if (this.state.stopCoords.length > 1) {
       markers = this.state.stopCoords.map(marker => {
         // console.log(marker.latlng);
         return (
-          <Marker coordinate={marker} onPress={() => this.markerClick(marker)}>
+          <Marker
+            coordinate={marker.latlng}
+            onPress={() => this.markerClick(marker)}
+          >
             <Image source={stopIcon} style={{ width: 12, height: 12 }} />
           </Marker>
         );
@@ -193,18 +199,50 @@ export default class Map extends React.Component {
           }}
           showsUserLocation={true}
         >
-          <Polyline
+          {/* <Polyline
             coordinates={this.state.stopCoords}
             strokeWidth={5}
             strokeColor="blue"
+          /> */}
+          {/* {onStart()} */}
+          <MapViewDirections
+            origin={this.state.stopCoords[0]}
+            destination={this.state.stopCoords[this.state.stopCoords - 1]}
+            apikey={GOOGLE_MAPS_APIKEY}
+            waypoints={this.state.stopCoords}
+            splitWaypoints={true}
+            mode={"DRIVING"}
+            strokeWidth={3}
+            strokeColor="hotpink"
+            onStart={params => {
+              console.log(
+                `Started routing between "${params.origin}" and "${params.destination}"`
+              );
+            }}
+            onReady={result => {
+              console.log(`Distance: ${result.distance} km`);
+              console.log(`Duration: ${result.duration} min.`);
+
+              this.mapView.fitToCoordinates(result.coordinates, {
+                edgePadding: {
+                  right: width / 20,
+                  bottom: height / 20,
+                  left: width / 20,
+                  top: height / 20
+                }
+              });
+            }}
+            onError={errorMessage => {
+              console.log("GOT AN ERROR");
+            }}
           />
           {markers}
-          <Marker
+          {/* <Marker
             coordinate={{
               latitude: this.state.coords.latitude,
               longitude: this.state.coords.longitude
             }}
-          ></Marker>
+          ></Marker> */}
         </MapView>
       );
     } else {

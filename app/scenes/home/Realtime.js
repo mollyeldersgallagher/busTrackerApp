@@ -16,10 +16,12 @@ export default class Realtime extends React.Component {
 
     this.state = {
       isLoading: true,
+      realtime: [],
       stop: this.props.navigation.getParam("stop", {})
     };
   }
   async componentDidMount() {
+    console.log(this.state.stop);
     await fetch(
       `https://bus-tracker-app-backend.herokuapp.com/rtpi/realtime/${this.state.stop}`
     )
@@ -34,41 +36,54 @@ export default class Realtime extends React.Component {
         response.status(400).json("Error: " + err);
         console.log(err);
       });
-    // setInterval(() => {
-    //   fetch(
-    //     `https://bus-tracker-app-backend.herokuapp.com/rtpi/realtime/${this.state.stop}`
-    //   )
-    //     .then(response => response.json())
-    //     .then(realtimeInfo => {
-    //       this.setState({
-    //         realtime: realtimeInfo.results,
-    //         isLoading: false
-    //       });
-    //     })
-    //     .catch(err => {
-    //       response.status(400).json("Error: " + err);
-    //       console.log(err);
-    //     });
-    // }, 100000);
+    setInterval(() => {
+      fetch(
+        `https://bus-tracker-app-backend.herokuapp.com/rtpi/realtime/${this.state.stop}`
+      )
+        .then(response => response.json())
+        .then(realtimeInfo => {
+          this.setState({
+            realtime: realtimeInfo.results,
+            isLoading: false
+          });
+        })
+        .catch(err => {
+          response.status(400).json("Error: " + err);
+          console.log(err);
+        });
+    }, 10000);
+    console.log(this.state.realtime);
   }
 
   render() {
-    console.log(this.state.realtime);
-    let results = 10;
+    // console.log(this.state.realtime);
+    const results = 10;
     let dueTimes = [];
-    if (results.length > 1) {
-      dueTimes = this.state.realtime.map(singleRealtime => {
-        // console.log(marker.latlng);
-        return (
-          <Text>
-            {singleRealtime.duetime},{singleRealtime.destination}
-          </Text>
-        );
-      });
-    }
+    // console.log(results);
 
+    if (this.state.realtime.length !== 0 && this.state.isLoading === false) {
+      //  console.log(results);
+      dueTimes.push(
+        this.state.realtime.map((singleRealtime, index) => {
+          console.log("hello");
+          console.log(singleRealtime);
+          return (
+            <Text>
+              route: {singleRealtime.route},{singleRealtime.duetime} minutes
+              ,dest: {singleRealtime.destination}
+            </Text>
+          );
+        })
+      );
+    }
+    //  console.log(dueTimes);
     if (this.state.isLoading === false) {
-      return <View style={styles.container}>{dueTimes}</View>;
+      return (
+        <View style={styles.container}>
+          <Text>Hello</Text>
+          {dueTimes}
+        </View>
+      );
     } else {
       return (
         <View style={styles.container}>
