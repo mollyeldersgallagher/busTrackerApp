@@ -24,6 +24,7 @@ export default function Home(props) {
         title={"Update Profile"}
         onPress={() => navigate("UpdateProfile")}
       />
+      <Button title={"Profile"} onPress={() => navigate("Profile")} />
       <Button title={"Bus Route"} onPress={() => navigate("Operator")} />
 
       <Button

@@ -1,13 +1,24 @@
 import React from "react";
-import { Text, View, StyleSheet, Keyboard, Image } from "react-native";
+import {
+  Text,
+  View,
+  StyleSheet,
+  Keyboard,
+  Dimensions,
+  Button,
+  Image
+} from "react-native";
 import MapView, { Marker, Polyline } from "react-native-maps";
-//import { Tooltip, Text } from "react-native-elements";
-// import PolyLine from " @mapbox/polyline";
 import Constants from "expo-constants";
 import * as Location from "expo-location";
 import * as Permissions from "expo-permissions";
 import MapViewDirections from "react-native-maps-directions";
 import axios from "axios";
+import Destinations from "../../components/Destinations";
+//import { Button } from "react-native-elements";
+//import CurrentLocation from "../../components/CurrentLocation";
+//
+import Bus from "../../components/Bus";
 import stopIcon from "../../../assets/stopImage.png";
 const decodePolyline = require("decode-google-map-polyline");
 
@@ -17,6 +28,9 @@ const LOCATION_SETTINGS = {
   timeInterval: 200,
   distanceInterval: 0
 };
+
+const width = Dimensions.get("window").width; //full width
+const height = Dimensions.get("window").height; //full height
 
 export default class Map extends React.Component {
   constructor(props) {
@@ -71,7 +85,9 @@ export default class Map extends React.Component {
         });
       }
 
-      let location = await Location.getCurrentPositionAsync({});
+      let location = await Location.getCurrentPositionAsync({
+        enableHighAccuracy: true
+      });
       this.setState({
         location: location,
         coords: {
@@ -151,6 +167,14 @@ export default class Map extends React.Component {
       console.log(error);
     }
   };
+  // centerMap() {
+  //   const {
+  //     latitude,
+  //     longitude,
+  //     latitudeDelta,
+  //     longitudeDelta
+  //   } = thi.state.region;
+  // }
   markerClick(marker) {
     console.log(marker);
     this.props.navigation.push("Realtime", {
@@ -186,64 +210,117 @@ export default class Map extends React.Component {
 
     if (this.state.isLoading === false) {
       return (
-        <MapView
-          ref={map => {
-            this.map = map;
-          }}
-          style={styles.mapStyle}
-          region={{
-            latitude: this.state.coords.latitude,
-            longitude: this.state.coords.longitude,
-            latitudeDelta: 0.0922,
-            longitudeDelta: 0.0421
-          }}
-          showsUserLocation={true}
-        >
-          {/* <Polyline
+        <View style={styles.container}>
+          <Destinations />
+          {/* <CurrentLocation
+            cb={() => {
+              this.centerMap();
+            }}
+          /> */}
+
+          <MapView
+            ref={map => {
+              this.map = map;
+            }}
+            region={{
+              latitude: this.state.coords.latitude,
+              longitude: this.state.coords.longitude,
+              latitudeDelta: 0.0922,
+              longitudeDelta: 0.0421
+            }}
+            showsMyLocationButton={true}
+            showsUserLocation={true}
+            showsCompass={true}
+            rotateEnabled={false}
+            style={styles.mapStyle}
+          >
+            <Bus
+              bus={{
+                uid: null,
+                location: {
+                  latitude: this.state.coords.latitude,
+                  longitude: this.state.coords.longitude,
+                  latitudeDelta: 0.0922,
+                  longitudeDelta: 0.0421
+                }
+              }}
+            />
+            {/* <Polyline
             coordinates={this.state.stopCoords}
             strokeWidth={5}
             strokeColor="blue"
           /> */}
-          {/* {onStart()} */}
-          <MapViewDirections
-            origin={this.state.stopCoords[0]}
-            destination={this.state.stopCoords[this.state.stopCoords - 1]}
-            apikey={GOOGLE_MAPS_APIKEY}
-            waypoints={this.state.stopCoords}
-            splitWaypoints={true}
-            mode={"DRIVING"}
-            strokeWidth={3}
-            strokeColor="hotpink"
-            onStart={params => {
-              console.log(
-                `Started routing between "${params.origin}" and "${params.destination}"`
-              );
-            }}
-            onReady={result => {
-              console.log(`Distance: ${result.distance} km`);
-              console.log(`Duration: ${result.duration} min.`);
+            {/* {onStart()} */}
 
-              this.mapView.fitToCoordinates(result.coordinates, {
-                edgePadding: {
-                  right: width / 20,
-                  bottom: height / 20,
-                  left: width / 20,
-                  top: height / 20
-                }
-              });
+            {/* <MapViewDirections
+              origin={this.state.stopCoords[0]}
+              destination={this.state.stopCoords[this.state.stopCoords - 1]}
+              apikey={GOOGLE_MAPS_APIKEY}
+              waypoints={this.state.stopCoords}
+              splitWaypoints={true}
+              mode={"DRIVING"}
+              strokeWidth={3}
+              strokeColor="hotpink"
+              onStart={params => {
+                console.log(
+                  `Started routing between "${params.origin}" and "${params.destination}"`
+                );
+              }}
+              onReady={result => {
+                console.log(`Distance: ${result.distance} km`);
+                console.log(`Duration: ${result.duration} min.`);
+
+                this.mapView.fitToCoordinates(result.coordinates, {
+                  edgePadding: {
+                    right: width / 20,
+                    bottom: height / 20,
+                    left: width / 20,
+                    top: height / 20
+                  }
+                });
+              }}
+              onError={errorMessage => {
+                console.log("GOT AN ERROR");
+              }}
+            /> */}
+            {/* <MapView.Marker.Animated
+              coordinate={{
+              latitude: this.state.coords.latitude,
+              longitude: this.state.coords.longitude
             }}
-            onError={errorMessage => {
-              console.log("GOT AN ERROR");
-            }}
-          />
-          {markers}
-          {/* <Marker
+              ref={marker => {
+                this.marker = marker;
+              }}
+              style={{ width: 50, height: 50 }}
+            >
+              <Image
+                source={require("../../../assets/bus.png")}
+                style={{ width: 32, height: 32 }}
+              />
+            </MapView.Marker.Animated> */}
+            {markers}
+            {/* <Marker
             coordinate={{
               latitude: this.state.coords.latitude,
               longitude: this.state.coords.longitude
             }}
           ></Marker> */}
-        </MapView>
+          </MapView>
+          <Button
+            title="Start Trip"
+            onPress={() => {
+              this.props.navigation.navigate("Trip", {
+                points: {
+                  start: this.state.stopCoords[0],
+                  finish: this.state.stopCoords[
+                    this.state.stopCoords.length - 1
+                  ]
+                }
+                // otherParam: "anything you want here"
+              });
+            }}
+          />
+        </View>
       );
     } else {
       return (
@@ -260,8 +337,9 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#ecf0f1",
-    paddingTop: Constants.statusBarHeight
+    backgroundColor: "white"
+
+    // paddingTop: Constants.statusBarHeight
   },
   paragraph: {
     margin: 24,
@@ -271,8 +349,8 @@ const styles = StyleSheet.create({
     color: "#34495e"
   },
   mapStyle: {
-    flex: 1
-    // width: Dimensions.get("window").width,
-    // height: Dimensions.get("window").height
+    flex: 1,
+    height,
+    width
   }
 });

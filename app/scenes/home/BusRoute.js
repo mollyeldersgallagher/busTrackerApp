@@ -1,11 +1,9 @@
 import React, { Component } from "react";
-import { ScrollView, FlatList, TextInput, Text, View } from "react-native";
-//import react in our project
-//import SelectBox from "react-native-multi-selectbox";
-//import basic react native components
+import { ScrollView, FlatList, TextInput, View, Text } from "react-native";
 import SearchableDropdown from "react-native-searchable-dropdown";
 import Operator from "./Operator";
-//import SearchableDropdown component
+import { ListItem, SearchBar } from "react-native-elements";
+import avatar from "../../../assets/stopImage.png";
 
 export default class BusRoute extends Component {
   constructor() {
@@ -14,14 +12,11 @@ export default class BusRoute extends Component {
       serverData: [],
       operator: "",
       routes: [],
-      loading: true
-      //Data Source for the SearchableDropdown
+      loading: true,
+      search: ""
     };
-    // const { operator } = route.params;
-    // const { navigate } = props.navigation;
   }
   async componentDidMount() {
-    // const { navigation } = this.props;
     await this.setState({
       operator: this.props.navigation.getParam("operator", {})
     });
@@ -30,29 +25,38 @@ export default class BusRoute extends Component {
     )
       .then(response => response.json())
       .then(responseJson => {
-        //Successful response from the API Call
         this.setState({
           serverData: responseJson.results,
-
           loading: false
-          //adding the new data in Data Source of the SearchableDropdown
+          //search: ""
         });
       })
       .catch(error => {
         console.error(error);
       });
   }
+  // searchFilterFunction = text => {
+  //   const filteredRoutes = this.state.serverData.filter(item => {
+  //     console.log(item.route);
+  //     return item.route.toLowerCase().indexOf(text) !== -1;
+  //   });
+
+  //   this.setState({ serverData: filteredRoutes });
+  // };
+  handleSearchInput = text => {
+    this.setState({
+      search: text
+    });
+  };
+
   render() {
+    const filteredRoutes = this.state.serverData.filter(item => {
+      return item.route.toLowerCase().indexOf(this.state.search) !== -1;
+    });
     if (this.state.loading) {
       console.log(this.state.loading);
       return <Text>Loading</Text>;
     } else {
-      // console.log(this.state.serverData);
-      // this.serverData.map(item => {
-      //   this.state.routes.push({ name: item.route });
-      // });
-      // item.name = route;
-      //const { locations, selectedLocations, selectedValues } = this.state;
       return (
         <View>
           <Text>{this.state.operator.operatorname} BUS</Text>
@@ -60,7 +64,37 @@ export default class BusRoute extends Component {
           <Text style={{ marginLeft: 10 }}>
             Searchable Dropdown from Dynamic Array from Server
           </Text>
-          <SearchableDropdown
+          <SearchBar
+            placeholder="Type Here..."
+            value={this.state.search}
+            onChangeText={text => this.handleSearchInput(text)}
+          />
+          {/* <View style={{ flex: 1 }}> */}
+          <FlatList
+            data={filteredRoutes}
+            renderItem={({ item }) => (
+              <ListItem
+                badge={{
+                  value: 3,
+                  textStyle: { color: "white" },
+                  containerStyle: { marginTop: -20 }
+                }}
+                title={`${item.route}`}
+                onPress={() => {
+                  this.props.navigation.push("MapScreen", {
+                    route: item.route
+                  });
+                  alert(JSON.stringify(item.route));
+                }}
+                // subtitle={item.email}
+              />
+            )}
+            keyExtractor={item => item.route}
+            //ItemSeparatorComponent={this.renderSeparator}
+            // ListHeaderComponent={this.renderHeader}
+          />
+          {/* </View> */}
+          {/* <SearchableDropdown
             onTextChange={text => console.log(text)}
             //On text change listner on the searchable input
             onItemSelect={item => {
@@ -109,7 +143,7 @@ export default class BusRoute extends Component {
             setSort={(item, searchedText) =>
               item.route.toLowerCase().indexOf(searchedText.toLowerCase()) > -1
             }
-          />
+          /> */}
         </View>
       );
     }
